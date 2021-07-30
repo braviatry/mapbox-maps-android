@@ -9,12 +9,19 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.expressions.dsl.generated.match
 import com.mapbox.maps.extension.style.image.image
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.addLayerAbove
 import com.mapbox.maps.extension.style.layers.generated.symbolLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
+import com.mapbox.maps.extension.style.layers.properties.generated.IconTextFit
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
+import com.mapbox.maps.extension.style.utils.parseNinePatchResource
 import com.mapbox.maps.testapp.R
-import kotlinx.android.synthetic.main.activity_add_marker_symbol.*
+import com.mapbox.maps.testapp.utils.addNinePatchImage
+import kotlinx.android.synthetic.main.activity_add_marker_symbol.mapView
+
+val NINE_PATCH = "nine-patch"
 
 /**
  * Example showing how to add 2 different markers based on their type
@@ -103,7 +110,26 @@ class AddMarkersSymbolActivity : AppCompatActivity() {
           iconAnchor(IconAnchor.BOTTOM)
         }
       }
-    )
+    ) { style ->
+      style.addNinePatchImage(
+        NINE_PATCH,
+        ninePatchBitmap = parseNinePatchResource(R.drawable.blue_round_nine),
+      )
+
+      style.addLayer(
+        symbolLayer(
+          "nine-layer",
+          SOURCE_ID
+        ) {
+          iconTextFit(
+            IconTextFit.BOTH
+          )
+          iconImage(NINE_PATCH)
+          textField("Bla bla bla")
+        },
+//        LAYER_ID
+      )
+    }
   }
 
   override fun onStart() {
@@ -127,6 +153,7 @@ class AddMarkersSymbolActivity : AppCompatActivity() {
   }
 
   companion object {
+
     private const val RED_ICON_ID = "red"
     private const val BLUE_ICON_ID = "blue"
     private const val SOURCE_ID = "source_id"

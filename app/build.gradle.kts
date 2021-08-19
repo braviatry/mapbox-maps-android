@@ -4,6 +4,8 @@ plugins {
   id("com.mapbox.maps.token")
 }
 
+val buildFromSource: String by project
+
 android {
   compileSdkVersion(AndroidVersions.compileSdkVersion)
   defaultConfig {
@@ -51,6 +53,12 @@ android {
   dexOptions {
     javaMaxHeapSize = "4g"
   }
+
+  if (buildFromSource.toBoolean()) {
+    packagingOptions {
+      pickFirst("**/libc++_shared.so")
+    }
+  }
 }
 
 dependencies {
@@ -94,5 +102,5 @@ project.apply {
   from("$rootDir/gradle/lint.gradle")
 }
 
-the<com.mapbox.AccessTokenExtension>().file =
-  "${project.rootDir}/app/src/main/res/values/developer-config.xml"
+val localPath:String = org.apache.commons.io.FilenameUtils.getFullPathNoEndSeparator(project.buildscript.sourceFile.toString())
+the<com.mapbox.AccessTokenExtension>().file = "${localPath}/src/main/res/values/developer-config.xml"

@@ -17,14 +17,24 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 }
+val buildFromSource: String by project
 
 dependencies {
   implementation(Dependencies.kotlin)
   implementation(Dependencies.mapboxBase)
   implementation(Dependencies.androidxAnnotations)
   api(Dependencies.mapboxGestures)
-  api(Dependencies.mapboxGlNative)
-  api(Dependencies.mapboxCoreCommon)
+  if (buildFromSource.toBoolean()) {
+    api(project(":maps-core"))
+  } else {
+    api(Dependencies.mapboxGlNative)
+  }
+
+  if (buildFromSource.toBoolean()) {
+    api(project(":common"))
+  } else {
+    api(Dependencies.mapboxCoreCommon)
+  }
   testImplementation(Dependencies.junit)
   testImplementation(Dependencies.mockk)
   testImplementation(Dependencies.androidxTestCore)
